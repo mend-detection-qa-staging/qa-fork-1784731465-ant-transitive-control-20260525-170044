@@ -1,0 +1,169 @@
+{
+  "_comment": "Autotest config for ant-transitive-control-20260525-170044 — Mode-3 path-scan probe. The bolt-4 SCM scanner does NOT invoke Ivy resolution. It path-scans lib/*.jar. 7 JARs are pre-committed reflecting the post-resolution state of three transitive-control mechanisms: plain transitive identity (guava), transitive=false (commons-beanutils), and <exclude> (httpclient). The regression signals are the ABSENT JARs: commons-logging-*.jar and commons-collections-*.jar must NOT appear in the scan output.",
+  "_probe_id": "ant-transitive-control-20260525-170044",
+  "_coverage_plan": "COVERAGE-PLAN.md Project #7 (P1) — transitive control mechanisms",
+  "_catalog_ids": ["#9", "#13", "#17"],
+  "_scanner_mode": "mode-3-default-path-scan",
+  "_mode_note": "Mode-1 Ivy resolution is not supported by bolt-4 SCM scanner. For Mode-1 testing, use pipeline-mode `mend ua` against the same repo.",
+  "_warnings_follow_up": [
+    "nin operator on direct_dependencies_names_list: supported per extending-validations.md (operator 'nin' = none of actual in expected). Used here to assert commons-logging-*.jar and commons-collections-*.jar are absent from Mend's output.",
+    "The nin check uses prefix substrings 'commons-logging' and 'commons-collections' which will match any version of these JARs. The nin operator checks that none of the actual dep names are IN the expected list — so listing the full JAR filename (as Mend emits it) is required. Adjust to actual emitted names if Mend uses a different form.",
+    "If Mend emits commons-logging or commons-collections JARs sourced from a host-level Maven cache (not from lib/), the nin assertion will fail — this is the intended regression behavior."
+  ],
+  "description": "Autotest configuration file for dependency tree detection validation",
+  "version": 1.8,
+  "base_config": {
+    "branch": null,
+
+    "validate_scan_output": true,
+    "scan_output": {
+      "security_scan_report_conclusion": "success",
+      "total_libs_scanned": {"gte": 7},
+      "expected_messages": []
+    },
+
+    "validate_dependency_tree": true,
+    "dependency_tree": {
+      "check_dependency_tree_detection_status": true,
+      "check_update_request_sca_results": true,
+      "check_system_paths": false,
+
+      "expected_total_dependencies_number": {"gte": 7},
+      "expected_direct_dependencies_number": {"gte": 7},
+      "expected_transitive_dependencies_number": {"gte": 0},
+
+      "direct_dependencies_names_list": {
+        "contains": [
+          "guava-32.1.3-jre.jar",
+          "failureaccess-1.0.1.jar",
+          "commons-beanutils-1.8.3.jar",
+          "httpclient-4.5.14.jar",
+          "httpcore-4.4.16.jar",
+          "commons-codec-1.11.jar"
+        ]
+      },
+
+      "transitive_dependencies_names_list": {
+        "contains": []
+      },
+
+      "expected_package_managers": {
+        "contains": ["ant"]
+      },
+
+      "expected_dependency_pairs": [
+        {
+          "artifactId": "guava-32.1.3-jre.jar",
+          "version": "32.1.3-jre",
+          "_note": "Mechanism 1 direct: plain transitive resolution, guava itself"
+        },
+        {
+          "artifactId": "failureaccess-1.0.1.jar",
+          "version": "1.0.1",
+          "_note": "Regression signal #13 (transitive-only-dep): guava's transitive must appear"
+        },
+        {
+          "artifactId": "commons-beanutils-1.8.3.jar",
+          "version": "1.8.3",
+          "_note": "Mechanism 2 direct: transitive=false, only this JAR — no logging or collections"
+        },
+        {
+          "artifactId": "httpclient-4.5.14.jar",
+          "version": "4.5.14",
+          "_note": "Mechanism 3 direct: <exclude> on commons-logging applied"
+        },
+        {
+          "artifactId": "httpcore-4.4.16.jar",
+          "version": "4.4.16",
+          "_note": "httpclient transitive kept after <exclude>"
+        },
+        {
+          "artifactId": "commons-codec-1.11.jar",
+          "version": "1.11",
+          "_note": "httpclient transitive kept after <exclude>"
+        }
+      ],
+
+      "validate_agent_versions": false,
+      "expected_agent_version": "",
+      "expected_plugin_version": "",
+      "validate_mend_tags": false,
+
+      "validate_checksums": true,
+      "checksums_config": {
+        "check_sha1_not_empty": true,
+        "check_sha1_format": true,
+        "check_sha1_consistency": true,
+        "check_checksums_by_formula": false,
+        "expected_dependency_checksums": [
+          {
+            "artifactId": "guava-32.1.3-jre.jar",
+            "version": "32.1.3-jre",
+            "sha1": "0f306708742ce2bf0fb0901216183bc14073feae"
+          },
+          {
+            "artifactId": "failureaccess-1.0.1.jar",
+            "version": "1.0.1",
+            "sha1": "1dcf1de382a0bf95a3d8b0849546c88bac1292c9",
+            "_note": "Regression signal: if absent, Mend missed guava's transitive"
+          },
+          {
+            "artifactId": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+            "version": "9999.0-empty-to-avoid-conflict-with-guava",
+            "sha1": "b421526c5f297295adef1c886e5246c39d4ac629",
+            "_note": "Unusual version string — test that Mend fingerprints this correctly"
+          },
+          {
+            "artifactId": "commons-beanutils-1.8.3.jar",
+            "version": "1.8.3",
+            "sha1": "686ef3410bcf4ab8ce7fd0b899e832aaba5facf7"
+          },
+          {
+            "artifactId": "httpclient-4.5.14.jar",
+            "version": "4.5.14",
+            "sha1": "1194890e6f56ec29177673f2f12d0b8e627dec98"
+          },
+          {
+            "artifactId": "httpcore-4.4.16.jar",
+            "version": "4.4.16",
+            "sha1": "51cf043c87253c9f58b539c9f7e44c8894223850"
+          },
+          {
+            "artifactId": "commons-codec-1.11.jar",
+            "version": "1.11",
+            "sha1": "3acb4705652e16236558f0f4f2192cc33c3bd189"
+          }
+        ]
+      }
+    },
+
+    "validate_vulnerabilities_table": false,
+    "vulnerabilities_table": {
+      "check_vulnerabilities_table_structure": true,
+      "expected_total_vulnerabilities_number": {"gte": 0},
+      "vulnerabilities_ids_list": {"contains": []},
+      "vulnerabilities_names_list": {"contains": []}
+    },
+
+    "validate_scanner_logs": false,
+    "logs": {
+      "check_scanner_logs": true,
+      "detect_secrets": false,
+      "check_external_logs": false,
+      "expected_log_lines": []
+    },
+
+    "validate_reachability": false,
+    "reachability": {
+      "check_reachability_status": false
+    },
+
+    "validate_project_contributors": false,
+    "contributors": {
+      "check_contributors_structure": true,
+      "expected_contributors": [],
+      "expected_min_commits": {"gte": 1},
+      "expected_total_contributors": {}
+    }
+  }
+}

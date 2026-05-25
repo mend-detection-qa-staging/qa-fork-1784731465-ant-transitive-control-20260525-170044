@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  build.xml — ant-transitive-control probe (Project #7, P1)
+
+  Single-module Ant+Ivy probe exercising three distinct transitive-control mechanisms:
+    1. Plain transitive identity: guava -> failureaccess (should appear)
+    2. transitive="false": commons-beanutils (children must NOT appear)
+    3. <exclude>: httpclient with commons-logging excluded (httpcore + commons-codec kept)
+
+  Mode-3 note: The bolt-4 SCM scanner does NOT invoke Ivy resolution. It path-scans
+  lib/*.jar. JARs were pre-resolved and committed to lib/ to give Mode-3 something to
+  fingerprint. The transitive-control semantics are encoded in which JARs ARE and ARE NOT
+  present in lib/.
+
+  Catalog IDs: #9 (exclude-transitive), #13 (transitive-only-dep), #17 (transitive-false)
+-->
+<project name="ant-transitive-control" default="resolve" basedir=".">
+
+    <property name="ivy.version" value="2.5.2"/>
+    <property name="lib.dir" value="${basedir}/lib"/>
+
+    <!-- Bootstrap Ivy if not present in Ant lib -->
+    <target name="bootstrap-ivy"
+            description="Download Ivy into Ant lib if not already present">
+        <mkdir dir="${user.home}/.ant/lib"/>
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar"
+             dest="${user.home}/.ant/lib/ivy-${ivy.version}.jar"
+             skipexisting="true"
+             usetimestamp="true"/>
+    </target>
+
+    <!-- Ivy resolve: downloads all deps per ivy.xml into lib/ -->
+    <target name="resolve" depends="bootstrap-ivy"
+            description="Resolve Ivy dependencies according to ivy.xml transitive-control rules">
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="uri:org.apache.ivy.ant"
+                 classpath="${user.home}/.ant/lib/ivy-${ivy.version}.jar"/>
+        <ivy:settings file="${basedir}/ivysettings.xml" xmlns:ivy="uri:org.apache.ivy.ant"/>
+        <ivy:resolve  file="${basedir}/ivy.xml"         xmlns:ivy="uri:org.apache.ivy.ant"/>
+        <ivy:retrieve pattern="${lib.dir}/[artifact]-[revision].[ext]"
+                      xmlns:ivy="uri:org.apache.ivy.ant"/>
+    </target>
+
+    <!-- Validate: print resolved classpath for manual inspection -->
+    <target name="validate" depends="resolve"
+            description="Print the resolved compile classpath">
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="uri:org.apache.ivy.ant"
+                 classpath="${user.home}/.ant/lib/ivy-${ivy.version}.jar"/>
+        <ivy:cachepath pathid="compile.classpath" conf="compile"
+                       xmlns:ivy="uri:org.apache.ivy.ant"/>
+        <pathconvert property="classpath.str" refid="compile.classpath"/>
+        <echo message="Resolved compile classpath: ${classpath.str}"/>
+    </target>
+
+</project>

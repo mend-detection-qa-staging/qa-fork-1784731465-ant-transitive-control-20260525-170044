@@ -1,0 +1,21 @@
+{
+  "scanSettings": {
+    "configMode": "LOCAL",
+    "versioning": {
+      "java": "17"
+    }
+  },
+  "checkRunSettings": {
+    "vulnerableCheckRunConclusionLevel": "failure",
+    "displayMode": "diff",
+    "useSeverityRules": true
+  },
+  "issueSettings": {
+    "minSeverityLevel": "LOW"
+  },
+  "remediateSettings": {
+    "workflowRules": {
+      "enabled": false
+    }
+  }
+}

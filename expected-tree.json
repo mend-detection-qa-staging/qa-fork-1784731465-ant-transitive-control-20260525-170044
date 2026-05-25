@@ -1,0 +1,155 @@
+{
+  "_schema_version": "1.0",
+  "_probe_id": "ant-transitive-control-20260525-170044",
+  "_pm": "ant",
+  "_pm_version_tested": "ivy-2.5.x",
+  "_scanner_mode": "mode-3-default-path-scan",
+  "_patterns": [
+    "exclude-transitive",
+    "transitive-only-dep",
+    "transitive-false"
+  ],
+  "_catalog_ids": ["#9", "#13", "#17"],
+  "_generated": "2026-05-25",
+
+  "_mode_3_notes": [
+    "The bolt-4 SCM scanner does NOT invoke Mode-1 Ivy resolution.",
+    "It falls through to Mode-3 default path scan: SHA1 fingerprints of binary files (jar/war/dll/etc).",
+    "Each lib/*.jar appears as a flat direct dependency with no transitive structure.",
+    "Transitive-control semantics are exercised at lib-population time: we committed exactly the JARs that Ivy WOULD have produced post-resolution.",
+    "The ABSENCE of commons-logging-*.jar and commons-collections-*.jar in lib/ is the regression signal.",
+    "If Mend reports those JARs, it means it scanned a different source (e.g. a local Maven/Ivy cache) rather than only lib/.",
+    "Mode-1 testing would require pipeline-mode `mend ua -c whitesource.config`, not SCM integration."
+  ],
+
+  "_transitive_control_summary": {
+    "mechanism_1_plain_transitive": {
+      "catalog_id": "#13",
+      "pattern": "transitive-only-dep",
+      "direct": "guava-32.1.3-jre.jar",
+      "transitives_present": [
+        "failureaccess-1.0.1.jar",
+        "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"
+      ],
+      "note": "failureaccess is the regression signal: must appear (guava's transitive resolved normally)"
+    },
+    "mechanism_2_transitive_false": {
+      "catalog_id": "#17",
+      "pattern": "transitive-false",
+      "direct": "commons-beanutils-1.8.3.jar",
+      "transitives_cut": [
+        "commons-logging (1.1.1 from beanutils POM)",
+        "commons-collections (3.2.2 from beanutils POM)"
+      ],
+      "note": "commons-collections-*.jar absence is the regression signal for transitive=false"
+    },
+    "mechanism_3_exclude": {
+      "catalog_id": "#9",
+      "pattern": "exclude-transitive",
+      "direct": "httpclient-4.5.14.jar",
+      "transitives_kept": [
+        "httpcore-4.4.16.jar",
+        "commons-codec-1.11.jar"
+      ],
+      "transitives_excluded": [
+        "commons-logging-1.2.jar (excluded via <exclude org='commons-logging' module='commons-logging'/>)"
+      ],
+      "note": "commons-logging-*.jar absence is the regression signal for <exclude>"
+    }
+  },
+
+  "schema_version": "1.0",
+  "pm": "ant",
+  "source_file": "build.xml",
+  "root": {
+    "name": "ant-transitive-control-20260525-170044",
+    "version": "1.0.0",
+    "dependencies": [
+      "guava-32.1.3-jre.jar",
+      "failureaccess-1.0.1.jar",
+      "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
+      "commons-beanutils-1.8.3.jar",
+      "httpclient-4.5.14.jar",
+      "httpcore-4.4.16.jar",
+      "commons-codec-1.11.jar"
+    ]
+  },
+
+  "packages": {
+    "guava-32.1.3-jre.jar": {
+      "version": "32.1.3-jre",
+      "source": "local",
+      "source_detail": {"path": "lib/guava-32.1.3-jre.jar"},
+      "group": "main",
+      "hashes": ["0f306708742ce2bf0fb0901216183bc14073feae"],
+      "dependencies": [],
+      "_note": "Direct dep — mechanism 1 (plain transitive): its transitives failureaccess and listenablefuture are also in lib/"
+    },
+    "failureaccess-1.0.1.jar": {
+      "version": "1.0.1",
+      "source": "local",
+      "source_detail": {"path": "lib/failureaccess-1.0.1.jar"},
+      "group": "main",
+      "hashes": ["1dcf1de382a0bf95a3d8b0849546c88bac1292c9"],
+      "dependencies": [],
+      "_note": "Guava transitive — should appear (mechanism 1 regression signal: catalog #13)"
+    },
+    "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar": {
+      "version": "9999.0-empty-to-avoid-conflict-with-guava",
+      "source": "local",
+      "source_detail": {"path": "lib/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar"},
+      "group": "main",
+      "hashes": ["b421526c5f297295adef1c886e5246c39d4ac629"],
+      "dependencies": [],
+      "_note": "Guava transitive — empty JAR placeholder; appears in lib/ because transitive=true (default)"
+    },
+    "commons-beanutils-1.8.3.jar": {
+      "version": "1.8.3",
+      "source": "local",
+      "source_detail": {"path": "lib/commons-beanutils-1.8.3.jar"},
+      "group": "main",
+      "hashes": ["686ef3410bcf4ab8ce7fd0b899e832aaba5facf7"],
+      "dependencies": [],
+      "_note": "Direct dep with transitive=false (mechanism 2). Its children (commons-logging:1.1.1, commons-collections:3.2.2) must NOT appear in lib/."
+    },
+    "httpclient-4.5.14.jar": {
+      "version": "4.5.14",
+      "source": "local",
+      "source_detail": {"path": "lib/httpclient-4.5.14.jar"},
+      "group": "main",
+      "hashes": ["1194890e6f56ec29177673f2f12d0b8e627dec98"],
+      "dependencies": [],
+      "_note": "Direct dep with <exclude> on commons-logging (mechanism 3). httpcore and commons-codec kept."
+    },
+    "httpcore-4.4.16.jar": {
+      "version": "4.4.16",
+      "source": "local",
+      "source_detail": {"path": "lib/httpcore-4.4.16.jar"},
+      "group": "main",
+      "hashes": ["51cf043c87253c9f58b539c9f7e44c8894223850"],
+      "dependencies": [],
+      "_note": "httpclient transitive — kept after <exclude> on commons-logging"
+    },
+    "commons-codec-1.11.jar": {
+      "version": "1.11",
+      "source": "local",
+      "source_detail": {"path": "lib/commons-codec-1.11.jar"},
+      "group": "main",
+      "hashes": ["3acb4705652e16236558f0f4f2192cc33c3bd189"],
+      "dependencies": [],
+      "_note": "httpclient transitive — kept after <exclude> on commons-logging"
+    }
+  },
+
+  "project_metadata": {
+    "groups": ["main"]
+  },
+
+  "warnings": [
+    "REGRESSION SIGNAL: The absence of commons-logging-*.jar in lib/ exercises BOTH mechanism 2 (transitive=false on beanutils, which would have brought commons-logging:1.1.1) and mechanism 3 (<exclude> on httpclient, which would have brought commons-logging:1.2). If Mend reports any commons-logging JAR, it scanned a source outside lib/ (e.g. a cached Ivy/Maven repo on the agent host). Catalog IDs: #9 (exclude), #17 (transitive-false).",
+    "REGRESSION SIGNAL: The absence of commons-collections-*.jar in lib/ exercises mechanism 2 (transitive=false on commons-beanutils:1.8.3). Its POM lists commons-collections:3.2.2 as a dependency; with transitive=false, Ivy skips it. Catalog ID: #17.",
+    "Mode-3 pivot: The bolt-4 SCM scanner does not honor ant.ivyResolveDependencies=true from whitesource.config. JARs were pre-resolved and committed to lib/ per Mode-3 requirements. The ivy.xml and ivysettings.xml are present for documentation and pipeline-mode mend-ua use only.",
+    "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar is a real Maven Central artifact (an empty JAR, 2199 bytes). Mend should fingerprint it and assign a known SHA1. If Mend skips it due to the unusual version string, that is a secondary detection signal.",
+    "Partial reproducibility limitation: Ant version is not pinnable via install-tool. Only java is pinned (17). Downstream comparators should treat the Ant binary version as uncontrolled."
+  ]
+}

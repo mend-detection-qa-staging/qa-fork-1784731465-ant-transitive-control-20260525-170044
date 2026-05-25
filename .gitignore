@@ -1,0 +1,6 @@
+# Ivy cache — do NOT ignore lib/
+# The lib/ directory contains pre-resolved JARs committed intentionally
+# for Mode-3 (binary path scan) testing. Mend's bolt-4 SCM scanner
+# fingerprints these JARs directly.
+.ivy-cache/
+ivy-cache/

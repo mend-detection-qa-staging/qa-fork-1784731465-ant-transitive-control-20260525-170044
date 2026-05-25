@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ivysettings.xml — ant-transitive-control probe (Project #7, P1)
+
+  Minimal settings: Maven Central as the sole resolver, latest-revision conflict
+  manager (the default). No custom conflict manager needed — this probe tests
+  dep-level transitive controls (transitive="false" and <exclude>), not global
+  conflict-manager configuration (that is Project #1's domain).
+
+  The default conflict manager is latest-revision, which is Ivy's built-in default.
+  Explicitly naming it here makes the intended behavior unambiguous.
+-->
+<ivysettings>
+
+    <settings defaultResolver="central" defaultConflictManager="latest-revision"/>
+
+    <resolvers>
+        <ibiblio name="central"
+                 m2compatible="true"
+                 root="https://repo1.maven.org/maven2/"/>
+    </resolvers>
+
+</ivysettings>
