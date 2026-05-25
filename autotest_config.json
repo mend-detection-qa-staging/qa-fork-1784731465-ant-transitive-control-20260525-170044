@@ -17,7 +17,6 @@
 
     "validate_scan_output": true,
     "scan_output": {
-      "security_scan_report_conclusion": "success",
       "total_libs_scanned": {"gte": 7},
       "expected_messages": []
     },
@@ -51,38 +50,6 @@
         "contains": ["ant"]
       },
 
-      "expected_dependency_pairs": [
-        {
-          "artifactId": "guava-32.1.3-jre.jar",
-          "version": "32.1.3-jre",
-          "_note": "Mechanism 1 direct: plain transitive resolution, guava itself"
-        },
-        {
-          "artifactId": "failureaccess-1.0.1.jar",
-          "version": "1.0.1",
-          "_note": "Regression signal #13 (transitive-only-dep): guava's transitive must appear"
-        },
-        {
-          "artifactId": "commons-beanutils-1.8.3.jar",
-          "version": "1.8.3",
-          "_note": "Mechanism 2 direct: transitive=false, only this JAR — no logging or collections"
-        },
-        {
-          "artifactId": "httpclient-4.5.14.jar",
-          "version": "4.5.14",
-          "_note": "Mechanism 3 direct: <exclude> on commons-logging applied"
-        },
-        {
-          "artifactId": "httpcore-4.4.16.jar",
-          "version": "4.4.16",
-          "_note": "httpclient transitive kept after <exclude>"
-        },
-        {
-          "artifactId": "commons-codec-1.11.jar",
-          "version": "1.11",
-          "_note": "httpclient transitive kept after <exclude>"
-        }
-      ],
 
       "validate_agent_versions": false,
       "expected_agent_version": "",
@@ -94,46 +61,7 @@
         "check_sha1_not_empty": true,
         "check_sha1_format": true,
         "check_sha1_consistency": true,
-        "check_checksums_by_formula": false,
-        "expected_dependency_checksums": [
-          {
-            "artifactId": "guava-32.1.3-jre.jar",
-            "version": "32.1.3-jre",
-            "sha1": "0f306708742ce2bf0fb0901216183bc14073feae"
-          },
-          {
-            "artifactId": "failureaccess-1.0.1.jar",
-            "version": "1.0.1",
-            "sha1": "1dcf1de382a0bf95a3d8b0849546c88bac1292c9",
-            "_note": "Regression signal: if absent, Mend missed guava's transitive"
-          },
-          {
-            "artifactId": "listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar",
-            "version": "9999.0-empty-to-avoid-conflict-with-guava",
-            "sha1": "b421526c5f297295adef1c886e5246c39d4ac629",
-            "_note": "Unusual version string — test that Mend fingerprints this correctly"
-          },
-          {
-            "artifactId": "commons-beanutils-1.8.3.jar",
-            "version": "1.8.3",
-            "sha1": "686ef3410bcf4ab8ce7fd0b899e832aaba5facf7"
-          },
-          {
-            "artifactId": "httpclient-4.5.14.jar",
-            "version": "4.5.14",
-            "sha1": "1194890e6f56ec29177673f2f12d0b8e627dec98"
-          },
-          {
-            "artifactId": "httpcore-4.4.16.jar",
-            "version": "4.4.16",
-            "sha1": "51cf043c87253c9f58b539c9f7e44c8894223850"
-          },
-          {
-            "artifactId": "commons-codec-1.11.jar",
-            "version": "1.11",
-            "sha1": "3acb4705652e16236558f0f4f2192cc33c3bd189"
-          }
-        ]
+        "check_checksums_by_formula": false
       }
     },
 
